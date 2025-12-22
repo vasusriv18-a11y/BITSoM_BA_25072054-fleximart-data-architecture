@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?><sqlb_project><db path="fleximart LAST (7).db" readonly="0" foreign_keys="1" case_sensitive_like="0" temp_store="0" wal_autocheckpoint="1000" synchronous="2"/><attached/><window><main_tabs open="structure browser pragmas query" current="3"/></window><tab_structure><column_width id="0" width="300"/><column_width id="1" width="0"/><column_width id="2" width="100"/><column_width id="3" width="920"/><column_width id="4" width="0"/><expanded_item id="0" parent="1"/><expanded_item id="1" parent="1"/><expanded_item id="2" parent="1"/><expanded_item id="3" parent="1"/></tab_structure><tab_browse><table title="orders" custom_title="0" dock_id="1" table="4,6:mainorders"/><dock_state state="000000ff00000000fd00000001000000020000043c000002b6fc0100000001fb000000160064006f0063006b00420072006f007700730065003101000000000000043c0000011e00ffffff0000043c0000000000000004000000040000000800000008fc00000000"/><default_encoding codec=""/><browse_table_settings><table schema="main" name="customers" show_row_id="0" encoding="" plot_x_axis="" unlock_view_pk="_rowid_" freeze_columns="0"><sort/><column_widths><column index="1" value="77"/><column index="2" value="70"/><column index="3" value="70"/><column index="4" value="195"/><column index="5" value="43"/><column index="6" value="85"/><column index="7" value="105"/></column_widths><filter_values/><conditional_formats/><row_id_formats/><display_formats/><hidden_columns/><plot_y_axes/><global_filter/></table><table schema="main" name="order_items" show_row_id="0" encoding="" plot_x_axis="" unlock_view_pk="_rowid_" freeze_columns="0"><sort><column index="0" mode="0"/></sort><column_widths><column index="1" value="88"/><column index="2" value="69"/><column index="3" value="55"/><column index="4" value="65"/><column index="5" value="54"/></column_widths><filter_values/><conditional_formats/><row_id_formats/><display_formats/><hidden_columns/><plot_y_axes/><global_filter/></table><table schema="main" name="orders" show_row_id="0" encoding="" plot_x_axis="" unlock_view_pk="_rowid_" freeze_columns="0"><sort/><column_widths><column index="1" value="77"/><column index="2" value="85"/><column index="3" value="84"/><column index="4" value="78"/></column_widths><filter_values/><conditional_formats/><row_id_formats/><display_formats/><hidden_columns/><plot_y_axes/><global_filter/></table><table schema="main" name="products" show_row_id="0" encoding="" plot_x_axis="" unlock_view_pk="_rowid_" freeze_columns="0"><sort/><column_widths><column index="1" value="69"/><column index="2" value="156"/><column index="3" value="93"/><column index="4" value="62"/><column index="5" value="91"/></column_widths><filter_values/><conditional_formats/><row_id_formats/><display_formats/><hidden_columns/><plot_y_axes/><global_filter/></table></browse_table_settings></tab_browse><tab_sql><sql name="Customer Purchase History">SELECT
+    c.first_name || ' ' || c.last_name AS customer_name,
+    c.email,
+    COUNT(DISTINCT oi.transaction_id) AS total_orders,
+    SUM(oi.subtotal) AS total_spent
+FROM customers c,products p
+JOIN orders o 
+    ON c.customer_id = o.customer_id
+	JOIN order_items oi
+	ON p.product_id = oi.product_id
+GROUP BY c.customer_id
+HAVING total_orders &gt;= 2
+   AND total_spent &gt; 5000
+ORDER BY total_spent DESC;
+
+
+
+</sql><sql name="Product Sales Analysis">SELECT
+    p.category,
+    COUNT(DISTINCT p.product_id) AS num_products,
+    SUM(oi.quantity) AS total_quantity_sold,
+    SUM(oi.subtotal) AS total_revenue
+FROM products p
+JOIN order_items oi 
+    ON p.product_id = oi.product_id
+GROUP BY p.category
+HAVING total_revenue &gt; 10000
+ORDER BY total_revenue DESC;
+
+</sql><sql name="Monthly Sales Trend">SELECT
+    strftime('%m', o.order_date) AS month_number,
+    CASE strftime('%m', o.order_date)
+        WHEN '01' THEN 'January'
+        WHEN '02' THEN 'February'
+        WHEN '03' THEN 'March'
+        WHEN '04' THEN 'April'
+        WHEN '05' THEN 'May'
+        WHEN '06' THEN 'June'
+        WHEN '07' THEN 'July'
+        WHEN '08' THEN 'August'
+        WHEN '09' THEN 'September'
+        WHEN '10' THEN 'October'
+        WHEN '11' THEN 'November'
+        WHEN '12' THEN 'December'
+    END AS month_name,
+    COUNT(o.customer_id) AS total_orders,
+    SUM(o.total_amount) AS monthly_revenue,
+    SUM(SUM(o.total_amount)) OVER (
+        ORDER BY strftime('%m', o.order_date)
+    ) AS cumulative_revenue
+FROM orders o
+WHERE strftime('%Y', o.order_date) = '2024'
+GROUP BY month_number
+ORDER BY month_number;
+
+</sql><current_tab id="2"/></tab_sql></sqlb_project>
