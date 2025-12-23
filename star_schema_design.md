@@ -8,11 +8,11 @@ The dim_date table serving as a conformed dimension for time-based analysis is t
 
 Section 2: Design Decisions:
 
-The decision to go with transaction line-item level granularity was taken as it allows the best and the most detailed level of sales data. By inputting every product sold in an order as a distinct row, the data warehouse will be able to support proper analysis on the product, customer, and time levels. Because of the detailed level, FlexiMart will be able to perform sales trend analysis, calculate total revenue, and spot top-selling items without losing any important details.
+Ans.1 The decision to go with transaction line-item level granularity was taken as it allows the best and the most detailed level of sales data. By inputting every product sold in an order as a distinct row, the data warehouse will be able to support proper analysis on the product, customer, and time levels. Because of the detailed level, FlexiMart will be able to perform sales trend analysis, calculate total revenue, and spot top-selling items without losing any important details.
 
-Surrogate keys have been implemented instead of natural keys to ensure data variability and performance. Natural keys like product IDs or customer IDs might get altered over time or vary between source systems. Surrogate keys are system-generated integers that are always stable and unique, hence making joins quicker and lessening the dependence on operational system changes.
+Ans.2 Surrogate keys have been implemented instead of natural keys to ensure data variability and performance. Natural keys like product IDs or customer IDs might get altered over time or vary between source systems. Surrogate keys are system-generated integers that are always stable and unique, hence making joins quicker and lessening the dependence on operational system changes.
 
-This star schema design is capable of handling both drill-down and roll-up operations simultaneously. The users can go deep from yearly sales to quarterly, monthly, and even daily sales with the help of the date dimension. Likewise, roll-up operations allow monthly or yearly totals to be made from daily data simplification. This ability of maintenance makes the design very fitting for the analytical reporting and decision-making processes.
+Ans.3 This star schema design is capable of handling both drill-down and roll-up operations simultaneously. The users can go deep from yearly sales to quarterly, monthly, and even daily sales with the help of the date dimension. Likewise, roll-up operations allow monthly or yearly totals to be made from daily data simplification. This ability of maintenance makes the design very fitting for the analytical reporting and decision-making processes.
 
 Section 3: Sample Data Flow:
 
