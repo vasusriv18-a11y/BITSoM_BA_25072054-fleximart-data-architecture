@@ -1,0 +1,5 @@
+Customers processed: 25
+Customers loaded: 25
+Sales processed: 35
+Sales loaded: 35
+Duplicates removed and missing values handled successfully
